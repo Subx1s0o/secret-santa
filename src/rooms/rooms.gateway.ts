@@ -82,14 +82,14 @@ export class RoomsGateway {
   @SubscribeMessage('wish')
   async addWish(
     @MessageBody()
-    data: { roomId: string; userId: string; token: string; content: string },
+    data: { santaId: string; userId: string; token: string; content: string },
     @ConnectedSocket() socket: Socket,
   ) {
-    const { roomId, token, content, userId } = data;
+    const { santaId, token, content, userId } = data;
     try {
-      await this.socketService.createOrUpdateWish(roomId, { content }, token);
-      const updatedRoom = await this.roomService.getRoomById(roomId, userId);
-      this.server.to(roomId).emit('user-updated', updatedRoom);
+      await this.socketService.createOrUpdateWish(santaId, { content }, token);
+      const updatedRoom = await this.roomService.getRoomById(santaId, userId);
+      this.server.to(santaId).emit('user-updated', updatedRoom);
       this.server.to(socket.id).emit('user-updated-message');
     } catch (error) {
       this.server.to(socket.id).emit('not-updated', error);
@@ -99,18 +99,18 @@ export class RoomsGateway {
   @SubscribeMessage('address')
   async addAddress(
     @MessageBody()
-    data: { roomId: string; userId: string; token: string; content: string },
+    data: { santaId: string; userId: string; token: string; content: string },
     @ConnectedSocket() socket: Socket,
   ) {
-    const { roomId, token, content, userId } = data;
+    const { santaId, token, content, userId } = data;
     try {
       await this.socketService.createOrUpdateAddress(
-        roomId,
+        santaId,
         { content },
         token,
       );
-      const updatedRoom = await this.roomService.getRoomById(roomId, userId);
-      this.server.to(roomId).emit('user-updated', updatedRoom);
+      const updatedRoom = await this.roomService.getRoomById(santaId, userId);
+      this.server.to(santaId).emit('user-updated', updatedRoom);
       this.server.to(socket.id).emit('user-updated-message');
     } catch (error) {
       this.server.to(socket.id).emit('not-updated', error);
